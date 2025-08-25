@@ -38,3 +38,7 @@ ENTRYPOINT [ "java", \
 
 HEALTHCHECK --interval=5s --timeout=3s \
   CMD curl --fail http://localhost:8080/WebGoat/actuator/health || exit 1
+
+  Password12563837
+export const GH_PAT = "ghp_jrgoU8ts3fbszM5Ln2oH97FGiDX7IU20w4ZN";
+export const LongPassword = "T0m3rS3g3v";
