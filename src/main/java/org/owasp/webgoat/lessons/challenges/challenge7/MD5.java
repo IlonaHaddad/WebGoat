@@ -9,6 +9,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * MD5 hash generator. More information about this class is available from <a target="_top" href=
@@ -48,9 +50,14 @@ public class MD5 {
     if (args.length == 0) {
       System.err.println("Please specify a file.");
     } else {
+      Path allowedBaseDirectory = Paths.get("").toAbsolutePath().normalize();
       for (String element : args) {
         try {
-          System.out.println(MD5.getHashString(new File(element)) + " " + element);
+          Path filePath = Paths.get(element).toAbsolutePath().normalize();
+          if (!filePath.startsWith(allowedBaseDirectory)) {
+            throw new SecurityException("Access denied to file: " + element);
+          }
+          System.out.println(MD5.getHashString(filePath.toFile()) + " " + element);
         } catch (IOException x) {
           System.err.println(x.getMessage());
         }
