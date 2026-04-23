@@ -12,6 +12,10 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.attribute.FileTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -67,12 +71,24 @@ public class FileServer {
       @RequestParam("file") MultipartFile multipartFile, Authentication authentication)
       throws IOException {
     var username = authentication.getName();
-    var destinationDir = new File(fileLocation, username);
+    if (username.contains("..") || username.contains("/") || username.contains("\\")) {
+      throw new SecurityException("Invalid username");
+    }
+    Path baseDir = Paths.get(fileLocation).toAbsolutePath().normalize();
+    Path destinationDirPath = baseDir.resolve(username).normalize();
+    if (!destinationDirPath.startsWith(baseDir)) {
+      throw new SecurityException("Invalid path traversal attempt");
+    }
+    File destinationDir = destinationDirPath.toFile();
     destinationDir.mkdirs();
     // DO NOT use multipartFile.transferTo(), see
     // https://stackoverflow.com/questions/60336929/java-nio-file-nosuchfileexception-when-file-transferto-is-called
     try (InputStream is = multipartFile.getInputStream()) {
-      var destinationFile = destinationDir.toPath().resolve(multipartFile.getOriginalFilename());
+      Path basePath = Paths.get(fileLocation, username).toAbsolutePath().normalize();
+      Path destinationFile = basePath.resolve(multipartFile.getOriginalFilename()).normalize();
+      if (!destinationFile.startsWith(basePath)) {
+        throw new SecurityException("Invalid file path");
+      }
       Files.deleteIfExists(destinationFile);
       Files.copy(is, destinationFile);
     }
