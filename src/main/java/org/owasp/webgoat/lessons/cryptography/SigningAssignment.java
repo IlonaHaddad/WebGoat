@@ -19,7 +19,7 @@ import org.owasp.webgoat.container.assignments.AssignmentHints;
 import org.owasp.webgoat.container.assignments.AttackResult;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -34,10 +34,14 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class SigningAssignment implements AssignmentEndpoint {
 
-  @RequestMapping(path = "/crypto/signing/getprivate", produces = MediaType.TEXT_HTML_VALUE)
+  @GetMapping(path = "/crypto/signing/getprivate", produces = MediaType.TEXT_HTML_VALUE)
   @ResponseBody
-  public String getPrivateKey(HttpServletRequest request)
+  public String getPrivateKey(HttpServletRequest request, @RequestParam(required = false) String csrfToken)
       throws NoSuchAlgorithmException, InvalidAlgorithmParameterException {
+    String sessionToken = (String) request.getSession().getAttribute("csrfToken");
+    if (sessionToken == null || !sessionToken.equals(csrfToken)) {
+      return "Invalid CSRF Token";
+    }
 
     String privateKey = (String) request.getSession().getAttribute("privateKeyString");
     if (privateKey == null) {
