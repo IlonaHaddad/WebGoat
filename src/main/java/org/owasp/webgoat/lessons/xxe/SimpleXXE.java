@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.GetMapping;
 
 @RestController
 @AssignmentHints({
@@ -74,9 +75,8 @@ public class SimpleXXE implements AssignmentEndpoint {
     return success;
   }
 
-  @RequestMapping(
+  @GetMapping(
       path = "/xxe/sampledtd",
-      consumes = ALL_VALUE,
       produces = MediaType.TEXT_PLAIN_VALUE)
   @ResponseBody
   public String getSampleDTDFile() {
