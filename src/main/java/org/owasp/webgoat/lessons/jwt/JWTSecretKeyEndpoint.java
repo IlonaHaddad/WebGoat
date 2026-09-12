@@ -23,6 +23,7 @@ import org.owasp.webgoat.container.assignments.AttackResult;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -40,7 +41,7 @@ public class JWTSecretKeyEndpoint implements AssignmentEndpoint {
   private static final List<String> expectedClaims =
       List.of("iss", "iat", "exp", "aud", "sub", "username", "Email", "Role");
 
-  @RequestMapping(path = "/JWT/secret/gettoken", produces = MediaType.TEXT_HTML_VALUE)
+  @RequestMapping(path = "/JWT/secret/gettoken", method = RequestMethod.POST, produces = MediaType.TEXT_HTML_VALUE)
   @ResponseBody
   public String getSecretToken() {
     return Jwts.builder()
