@@ -19,7 +19,7 @@ import org.owasp.webgoat.container.users.UserProgress;
 import org.owasp.webgoat.container.users.UserProgressRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
@@ -41,7 +41,7 @@ public class LessonMenuService {
    *
    * @return a {@link java.util.List} object.
    */
-  @RequestMapping(path = URL_LESSONMENU_MVC, produces = "application/json")
+  @PostMapping(path = URL_LESSONMENU_MVC, produces = "application/json")
   public @ResponseBody List<LessonMenuItem> showLeftNav(@CurrentUsername String username) {
     // TODO: this looks way too complicated. Either we save it incorrectly or we miss something to
     // easily find out
